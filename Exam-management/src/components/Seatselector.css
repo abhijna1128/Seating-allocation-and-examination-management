@@ -1,0 +1,91 @@
+.container {
+    width: 1440px;
+    height: 1024px;
+    position: relative;
+    background: white;
+  }
+  
+  .header {
+    width: 1440px;
+    height: 56px;
+    position: absolute;
+    background: #D9D9D9;
+  }
+  
+  .title {
+    width: 1000px;
+    height: 23px;
+    position: absolute;
+    left: 220px;
+    top: 81px;
+    color: black;
+    font-size: 32px;
+    font-weight: 700;
+    word-wrap: break-word;
+  }
+  
+  .label {
+    width: 217px;
+    height: 29px;
+    position: absolute;
+    color: black;
+    font-size: 24px;
+    font-weight: 600;
+    word-wrap: break-word;
+  }
+  
+  .input {
+    width: 100px;
+    height: 29px;
+    position: absolute;
+    background: white;
+    border: 1px rgba(0, 0, 0, 0.20) solid;
+  }
+  
+  .box {
+    width: 275px;
+    height: 59px;
+    position: absolute;
+    background: #FDEEE3;
+    border: 1px solid black; /* Added border */
+  }
+  
+  .dropdown {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    width: 90px;
+  }
+  
+  .deleted-area {
+    width: 1440px;
+    height: 200px;
+    position: absolute;
+    top: 824px;
+    background: #F0F0F0;
+    border-top: 2px solid black;
+  }
+  
+  .submit-button {
+    width: 100px;
+    height: 40px;
+    position: absolute;
+    left: 670px;
+    top: 220px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .generated-table {
+    position: absolute;
+    left: 290px;
+    top: 260px;
+  }
+  
+  .recover-button {
+    position: absolute;
+    background-color: red;
+  }

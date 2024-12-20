@@ -1,0 +1,26 @@
+/* dashboard.css */
+.bg-light {
+    background-color: #f8f9fa !important;
+  }
+  
+  nav .btn {
+    padding: 15px;
+    font-size: 16px;
+    text-align: left;
+    border-radius: 5px;
+  }
+  
+  nav .btn:hover {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .card-body h5 {
+    font-size: 18px;
+  }
+  
+  .card-body .btn {
+    font-size: 14px;
+    margin-top: 10px;
+  }
+  
