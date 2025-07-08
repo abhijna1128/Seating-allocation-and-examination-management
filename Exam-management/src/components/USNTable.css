@@ -1,0 +1,50 @@
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  h1 {
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  h3 {
+    color: #555;
+    margin-bottom: 20px;
+  }
+  
+  .usn-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .usn-table th,
+  .usn-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+  }
+  
+  .usn-table th {
+    background-color: #f4f4f4;
+    color: #333;
+  }
+  
+  .usn-table td {
+    background-color: #fff;
+  }
+  
+  .usn-cell {
+    padding: 5px;
+    font-weight: bold;
+    color: #007bff;
+  }
+  
+  .usn-cell span {
+    display: block;
+  }
+  

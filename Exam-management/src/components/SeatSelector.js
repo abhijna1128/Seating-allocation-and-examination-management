@@ -1,14 +1,17 @@
+
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import './Seatselector.css';
+import './SeatSelector.css';
 
 const SeatSelector = () => {
+  const [roomNumber, setRoomNumber] = useState('');
   const [rows, setRows] = useState(1);
   const [columns, setColumns] = useState(1);
+  const navigate = useNavigate();
   const [seats, setSeats] = useState([]);
   const [deletedSeats, setDeletedSeats] = useState([]);
 
-  // Function to generate the grid
   const generateGrid = () => {
     const newSeats = [];
     for (let i = 0; i < rows; i++) {
@@ -17,47 +20,23 @@ const SeatSelector = () => {
           id: `${i}-${j}`,
           row: i,
           col: j,
-          type: 1, // Default type is 1-seater
+          type: 3, // Default type is 3-seater
         });
       }
     }
     setSeats(newSeats);
-    setDeletedSeats([]); // Clear deleted seats on new grid generation
   };
 
-  // Function to delete a seat
-  const deleteSeat = (seatId) => {
-    const seatToDelete = seats.find((seat) => seat.id === seatId);
-    setSeats(seats.filter((seat) => seat.id !== seatId));
-    setDeletedSeats([...deletedSeats, seatToDelete]);
-  };
-
-  // Function to recover a deleted seat
-  const recoverSeat = (seatId) => {
-    const seatToRecover = deletedSeats.find((seat) => seat.id === seatId);
-    setDeletedSeats(deletedSeats.filter((seat) => seat.id !== seatId));
-    setSeats([...seats, seatToRecover]);
-  };
-
-  // Function to update the seat type
-  const updateSeatType = (seatId, type) => {
-    setSeats(
-      seats.map((seat) =>
-        seat.id === seatId ? { ...seat, type: parseInt(type) } : seat
-      )
-    );
-  };
-
-  // Function to save the grid
   const saveGrid = async () => {
     const data = {
+      roomNumber,
       rows,
       columns,
-      seat_data: seats
+      seatData: seats,
     };
 
     try {
-      const response = await axios.post('http://localhost:5000/api/seating-grid', data);
+      const response = await axios.post('http://localhost:5000/api/seating', data);
       console.log(response.data);
       alert('Seating grid saved successfully!');
     } catch (error) {
@@ -66,74 +45,110 @@ const SeatSelector = () => {
     }
   };
 
+  const submitGrid = async () => {
+    const data = {
+      roomNumber,
+      rows,
+      columns,
+      seatData: seats,
+    };
+
+    try {
+      const response = await axios.post('http://localhost:5000/api/seating', data);
+      console.log(response.data);
+      alert('Seating grid submitted successfully!');
+      navigate('/seating-assignment');
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Failed to submit seating grid');
+    }
+  };
+
+  const updateSeatType = (seatId, newType) => {
+    setSeats((prevSeats) =>
+      prevSeats.map((seat) =>
+        seat.id === seatId ? { ...seat, type: Number(newType) } : seat
+      )
+    );
+  };
+
+  const deleteSeat = (seatId) => {
+    setSeats((prevSeats) => {
+      const seatToDelete = prevSeats.find((seat) => seat.id === seatId);
+      setDeletedSeats((prevDeleted) => [...prevDeleted, seatToDelete]);
+      return prevSeats.filter((seat) => seat.id !== seatId);
+    });
+  };
+  
+  const recoverSeat = (seatId) => {
+    setDeletedSeats((prevDeleted) => {
+      const seatToRecover = prevDeleted.find((seat) => seat.id === seatId);
+      setSeats((prevSeats) => [...prevSeats, seatToRecover]);
+      return prevDeleted.filter((seat) => seat.id !== seatId);
+    });
+  };
+  
+
+  const goToNextPage = () => {
+    navigate('/seating-assignment');
+  };
+
   return (
     <div className="container">
       <div className="header"></div>
       <div className="title">Sahyadri College of Engineering & Management, Mangaluru</div>
 
-      {/* Inputs for Rows and Columns */}
-      <div className="label" style={{ left: '293px', top: '174px' }}>No. of Rows:</div>
+      <div className="label room-label">Room Number:</div>
+      <input
+        type="text"
+        className="input room-input"
+        value={roomNumber}
+        onChange={(e) => setRoomNumber(e.target.value)}
+      />
+
+      <div className="label rows-label">No. of Rows:</div>
       <input
         type="number"
-        className="input"
-        style={{ left: '445px', top: '174px' }}
+        className="input rows-input"
         min="1"
         max="10"
         value={rows}
         onChange={(e) => setRows(Number(e.target.value))}
       />
-      <div className="label" style={{ left: '875px', top: '174px' }}>No. of Columns:</div>
+
+      <div className="label columns-label">No. of Columns:</div>
       <input
         type="number"
-        className="input"
-        style={{ left: '1070px', top: '174px' }}
+        className="input columns-input"
         min="1"
         max="10"
         value={columns}
         onChange={(e) => setColumns(Number(e.target.value))}
       />
 
-      {/* Submit button to generate the grid */}
-      <button
-        className="submit-button"
-        style={{ left: '670px', top: '220px' }}
-        onClick={generateGrid}
-      >
-        Generate Grid
-      </button>
+      <button className="button generate-button" onClick={generateGrid}>Generate Grid</button>
+      <button className="button save-button" onClick={saveGrid}>Save Grid</button>
+      <button className="button submit-button" onClick={submitGrid}>Submit Grid</button>
+      <button className="button next-page-button" onClick={goToNextPage}>Next Page</button>
 
-      {/* Save button to save the grid */}
-      <button
-        className="save-button"
-        style={{ left: '770px', top: '220px' }}
-        onClick={saveGrid}
+      {/* Seat Display */}
+      <div
+        className="generated-table"
+        style={{ gridTemplateColumns: `repeat(${columns}, 1fr)` }}
       >
-        Save Grid
-      </button>
-
-      {/* Grid Display */}
-      <div className="generated-table" style={{ position: 'absolute', left: '290px', top: '260px' }}>
         {seats.map((seat) => (
-          <div
-            key={seat.id}
-            className="box"
-            style={{ left: `${seat.col * 276}px`, top: `${seat.row * 60}px` }}
-          >
+          <div key={seat.id} className="box">
+            <span>Row {seat.row}, Col {seat.col}</span>
             <select
               className="dropdown"
-              style={{ position: 'absolute', left: '10px', top: '10px', width: '90px' }}
               value={seat.type}
               onChange={(e) => updateSeatType(seat.id, e.target.value)}
             >
-              {[...Array(10)].map((_, index) => (
-                <option key={index + 1} value={index + 1}>
-                  {index + 1}
-                </option>
-              ))}
+              <option value="3">3</option>
+              <option value="5">5</option>
             </select>
             <button
-              className="input"
-              style={{ position: 'absolute', left: '150px', top: '10px' }}
+              className="button delete-button"
               onClick={() => deleteSeat(seat.id)}
             >
               Delete
@@ -142,19 +157,22 @@ const SeatSelector = () => {
         ))}
       </div>
 
-      {/* Recover Deleted Seats */}
-      <div className="deleted-area" id="deleted-area">
-        {deletedSeats.map((seat) => (
-          <button
-            key={seat.id}
-            className="input recover-button"
-            style={{ position: 'absolute', left: `${seat.col * 276 + 390}px`, top: `${seat.row * 60 + 275}px`, backgroundColor: 'red' }}
-            onClick={() => recoverSeat(seat.id)}
-          >
-            Recover
-          </button>
-        ))}
-      </div>
+      <div className="recovery-section">
+  <h3>Deleted Seats</h3>
+  {deletedSeats.map((seat) => (
+    <div key={seat.id} className="deleted-seat">
+      <span>Row {seat.row}, Col {seat.col}</span>
+      <button
+        className="button recovery-button"
+        onClick={() => recoverSeat(seat.id)}
+      >
+        Recover
+      </button>
+    </div>
+  ))}
+</div>
+
+        
     </div>
   );
 };
